@@ -1,12 +1,11 @@
-import express, { Express, Request, Response} from "express";
+import express, { Express } from "express";
 import 'dotenv/config'
 
-const app:Express = express()
+import { summonerRouter } from "./routes/summoner";
 
+const app:Express = express()
 app.use(express.json())
 
-app.get('/test', (req:Request, res:Response)=>{
-    res.status(200).send({message:'This is working fine'})
-})
+app.use(summonerRouter)
 
 export { app }
