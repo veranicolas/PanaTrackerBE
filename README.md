@@ -10,7 +10,7 @@ This is a simple API REST that performs CRUD operations for user data management
 
 - Clone/Fork the repo
 - `npm i`
-- Create and config your .env file (you'll need a RiotAPI Key)
+- Create and config your .env file (you'll need a [RiotAPI Key](https://developer.riotgames.com/))
 - `npm run dev` for local development
 
 ### Dependencies

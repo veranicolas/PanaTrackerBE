@@ -21,7 +21,7 @@ const getSummoner = async (req:Request ,res:Response) =>{
         const rankedData = await getRankData(data.id)
         if(rankedData !== 'unranked'){
             const rankImageURL = `https://opgg-static.akamaized.net/images/medals_new/${rankedData[0].tier.toLowerCase()}.png`
-            return res.status(200).send({...data, rankedData})
+            return res.status(200).send({...data, rankedData, rankImage:rankImageURL})
         } else {
             return res.status(200).send({...data, rank: 'unranked'})
         }
