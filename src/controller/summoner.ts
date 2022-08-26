@@ -1,27 +1,36 @@
 import axios from "axios"
 import { Request, Response } from "express"
 
-const URL = 'https://la2.api.riotgames.com'
+import { getRankData, getHighestMasteries } from "../services/summonerServices"
 
-const getRankData = async (id:string) =>{
+const BASE_URL = 'https://la2.api.riotgames.com'
 
-    const {data:rankedData} = await axios.get(`${URL}/lol/league/v4/entries/by-summoner/${id}?api_key=${process.env.RIOT_API}`)
+const getMainChampion = async (req:Request, res:Response) =>{
 
-    if(rankedData.length){
-        const tftRegex = new RegExp(/TFT/)
-        const riftData = rankedData.filter((queue:any)=>{
-            return tftRegex.test(queue.queueType) === false
-        })
-        return riftData
-    } else {
-        return 'unranked'
+    try{
+        const { data } = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.16.1/data/en_US/champion.json')
+
+        //@ts-ignorets-ignore
+        const masterieData:any = await getHighestMasteries(req.query.name)
+    
+        const mainChampion = Object.keys(data.data)
+            .map((champion)=>{
+                if(data.data[champion].key == masterieData.data[0].championId){
+                    return data.data[champion]
+                }
+            })
+
+        return res.status(200).send({...mainChampion})
+
+    } catch(error){
+        return res.status(500).send({message:'Error', error})
     }
 }
 
 const getSummoner = async (req:Request ,res:Response) =>{
 
     try{
-        const { data } = await axios.get(`${URL}/lol/summoner/v4/summoners/by-name/${req.query.name}?api_key=${process.env.RIOT_API}`)
+        const { data } = await axios.get(`${BASE_URL}/lol/summoner/v4/summoners/by-name/${req.query.name}?api_key=${process.env.RIOT_API}`)
         const rankedData = await getRankData(data.id)
         if(rankedData !== 'unranked'){
             const rankImageURL = `https://opgg-static.akamaized.net/images/medals_new/${rankedData[0].tier.toLowerCase()}.png`
@@ -37,4 +46,4 @@ const getSummoner = async (req:Request ,res:Response) =>{
     }
 }
 
-export { getSummoner }
+export { getSummoner , getMainChampion}
