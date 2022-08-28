@@ -4,8 +4,8 @@ import { getMainChampion, getSummoner } from '../controller/summoner'
 
 const summonerRouter = express.Router()
 
-summonerRouter.get('/summoner', getSummoner)
+summonerRouter.get('/summoner/:name', getSummoner)
 
-summonerRouter.get('/summoner/champions', getMainChampion)
+summonerRouter.get('/summoner/champion/:id', getMainChampion)
 
 export { summonerRouter }
