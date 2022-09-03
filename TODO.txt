@@ -1,0 +1,5 @@
+
+TODO - ADD user authentication
+TODO - ADD database 
+TODO - ADD friends controller/routes/services
+TODO - ADD matches services
