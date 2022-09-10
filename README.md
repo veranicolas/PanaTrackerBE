@@ -15,12 +15,14 @@ This is a simple API REST that performs CRUD operations for user data management
 
 ### Dependencies
 
-- Express
-- Axios
-- Typescript
-- ts-node-dev
-- dotenv
-- jsonwebtoken
+- [Express](https://expressjs.com/)
+- [Axios](https://axios-http.com/docs/intro)
+- [Typescript](https://www.typescriptlang.org/)
+- [Sequelize](https://sequelize.org/v3/)
+- [pg](https://www.npmjs.com/package/pg)
+- [ts-node-dev](https://www.npmjs.com/package/ts-node-dev)
+- [dotenv](https://www.npmjs.com/package/dotenv)
+- [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
 
 ## Notes
 
