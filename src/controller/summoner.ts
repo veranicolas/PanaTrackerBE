@@ -4,11 +4,12 @@ import { Request, Response } from "express"
 import { getRankData, getHighestMasteries } from "../services/summonerServices"
 
 const BASE_URL = 'https://la2.api.riotgames.com'
+const CURRENT_PATCH = '12.18.1'
 
 const getMainChampion = async (req:Request, res:Response) =>{
 
     try{
-        const { data } = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.16.1/data/en_US/champion.json')
+        const { data } = await axios.get(`http://ddragon.leagueoflegends.com/cdn/${CURRENT_PATCH}/data/en_US/champion.json`)
 
         //@ts-ignorets-ignore
         const masterieData:any = await getHighestMasteries(req.params.id)
@@ -21,7 +22,7 @@ const getMainChampion = async (req:Request, res:Response) =>{
                 }
             })
 
-        return res.status(200).send({...mainChampionData})
+        return res.status(200).send({...mainChampionData, currentPatchURL:`http://ddragon.leagueoflegends.com/cdn/${CURRENT_PATCH}`})
 
     } catch(error){
         return res.status(500).send({message:'Error', error})
