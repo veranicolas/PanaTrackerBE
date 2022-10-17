@@ -24,4 +24,40 @@ const getHighestMasteries = async (summonerId:string) =>{
     return data
 }
 
-export { getRankData , getHighestMasteries }
+const getSummonerDataFormat = (rankedData:any, data:any) =>{
+    if(rankedData !== 'unranked'){
+        let rankImageURL
+        rankedData.map((queue:any)=>{
+            if(queue.queueType === "RANKED_SOLO_5x5"){
+                rankImageURL = `https://opgg-static.akamaized.net/images/medals_new/${queue.tier.toLowerCase()}.png`
+            }
+        })
+
+        return {...data, rankedData, rankImage:rankImageURL}
+    } else {
+        return {...data, rank: 'unranked'}
+    }
+}
+
+const getUpdatedFriendsInfo = async (friendsIDs:any[]) =>{
+
+    try{
+        const friendsDataPromises = friendsIDs.map((item)=>{
+            return axios.get(`${BASE_URL}/lol/summoner/v4/summoners/by-puuid/${item}?api_key=${process.env.RIOT_API}`)
+        })
+        const results = await Promise.all(friendsDataPromises)
+        const resultsMapped = results.map((item:any)=>{
+            return getRankData(item.id)
+        })
+        const resultsRankData = await Promise.all(resultsMapped)
+        const summonersObjects = resultsRankData.map((rankData)=>{
+            return getSummonerDataFormat(rankData, results)
+        })
+
+        return summonersObjects
+    } catch(error){
+        console.log(error)
+    }
+}
+
+export { getRankData , getHighestMasteries, getSummonerDataFormat, getUpdatedFriendsInfo }

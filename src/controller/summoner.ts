@@ -1,10 +1,10 @@
 import axios from "axios"
-import { Request, Response } from "express"
+import { Request, Response } from "express" 
 
-import { getRankData, getHighestMasteries } from "../services/summonerServices"
+import { getRankData, getHighestMasteries, getSummonerDataFormat, getUpdatedFriendsInfo } from "../services/summonerServices"
 
 const BASE_URL = 'https://la2.api.riotgames.com'
-const CURRENT_PATCH = '12.18.1'
+const CURRENT_PATCH = '12.19.1'
 
 const getMainChampion = async (req:Request, res:Response) =>{
 
@@ -35,18 +35,10 @@ const getSummoner = async (req:Request ,res:Response) =>{
         const { data } = await axios.get(`${BASE_URL}/lol/summoner/v4/summoners/by-name/${req.params.name}?api_key=${process.env.RIOT_API}`)
         const rankedData = await getRankData(data.id)
 
-        if(rankedData !== 'unranked'){
-            let rankImageURL
-            rankedData.map((queue:any)=>{
-                if(queue.queueType === "RANKED_SOLO_5x5"){
-                    rankImageURL = `https://opgg-static.akamaized.net/images/medals_new/${queue.tier.toLowerCase()}.png`
-                }
-            })
-
-            return res.status(200).send({...data, rankedData, rankImage:rankImageURL})
-        } else {
-            return res.status(200).send({...data, rank: 'unranked'})
-        }
+        const summonerObject = getSummonerDataFormat(rankedData,data)
+        
+        return res.status(200).send({summonerObject})
+    
     } catch(error){
         return res.status(404).send({
             message:'Error',
@@ -55,4 +47,16 @@ const getSummoner = async (req:Request ,res:Response) =>{
     }
 }
 
-export { getSummoner , getMainChampion}
+const getFriendsUpdate = async (req:Request, res:Response) =>{
+
+    try{
+        const friendsIDs:any[] = req.body.friendsIDs
+        const summonersObjects = await getUpdatedFriendsInfo(friendsIDs)
+
+        return res.status(200).send({data:summonersObjects})
+    } catch(error){
+        return res.status(500).send({msg:'Error', error})
+    }
+}
+
+export { getSummoner , getMainChampion, getFriendsUpdate }
