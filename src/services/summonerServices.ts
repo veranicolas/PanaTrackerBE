@@ -52,9 +52,9 @@ const getUpdatedFriendsInfo = async (friendsIDs:any[]) =>{
         
         const resultsMapped = await Promise.all(results.map(async(item:any)=>{
             const rankedData = await getRankData(item.id)
+            const finalObject = getSummonerDataFormat(rankedData, item)
             return{
-                ...item,
-                rankedData
+                ...finalObject
             }
         })) 
 
