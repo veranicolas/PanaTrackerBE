@@ -45,16 +45,20 @@ const getUpdatedFriendsInfo = async (friendsIDs:any[]) =>{
         const friendsDataPromises = friendsIDs.map((item)=>{
             return axios.get(`${BASE_URL}/lol/summoner/v4/summoners/by-puuid/${item}?api_key=${process.env.RIOT_API}`)
         })
-        const results = await Promise.all(friendsDataPromises)
-        const resultsMapped = results.map((item:any)=>{
-            return getRankData(item.id)
-        })
-        const resultsRankData = await Promise.all(resultsMapped)
-        const summonersObjects = resultsRankData.map((rankData)=>{
-            return getSummonerDataFormat(rankData, results)
-        })
+        const results = (await Promise.all(friendsDataPromises))
+            .map((result)=>{
+                return result.data
+            })
+        
+        const resultsMapped = await Promise.all(results.map(async(item:any)=>{
+            const rankedData = await getRankData(item.id)
+            return{
+                ...item,
+                rankedData
+            }
+        })) 
 
-        return summonersObjects
+        return resultsMapped
     } catch(error){
         console.log(error)
     }

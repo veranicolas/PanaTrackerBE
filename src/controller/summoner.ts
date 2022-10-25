@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { Request, Response } from "express" 
 
 import { getRankData, getHighestMasteries, getSummonerDataFormat, getUpdatedFriendsInfo } from "../services/summonerServices"
@@ -35,8 +35,6 @@ const getSummoner = async (req:Request ,res:Response) =>{
         const { data } = await axios.get(`${BASE_URL}/lol/summoner/v4/summoners/by-name/${req.params.name}?api_key=${process.env.RIOT_API}`)
         const rankedData = await getRankData(data.id)
 
-        
-        
         return res.status(200).send(getSummonerDataFormat(rankedData,data))
     
     } catch(error){
@@ -54,7 +52,7 @@ const getFriendsUpdate = async (req:Request, res:Response) =>{
         const summonersObjects = await getUpdatedFriendsInfo(friendsIDs)
 
         return res.status(200).send({data:summonersObjects})
-    } catch(error){
+    } catch(error:any){
         return res.status(500).send({msg:'Error', error})
     }
 }
