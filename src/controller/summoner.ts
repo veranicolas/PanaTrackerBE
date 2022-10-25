@@ -35,9 +35,9 @@ const getSummoner = async (req:Request ,res:Response) =>{
         const { data } = await axios.get(`${BASE_URL}/lol/summoner/v4/summoners/by-name/${req.params.name}?api_key=${process.env.RIOT_API}`)
         const rankedData = await getRankData(data.id)
 
-        const summonerObject = getSummonerDataFormat(rankedData,data)
         
-        return res.status(200).send({summonerObject})
+        
+        return res.status(200).send(getSummonerDataFormat(rankedData,data))
     
     } catch(error){
         return res.status(404).send({

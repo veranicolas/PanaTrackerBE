@@ -6,7 +6,8 @@
   "scripts": {
     "build": "npx tsc",
     "dev": "ts-node-dev --respawn --exit-child --watch src src/index.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "deploy": "fly deploy"
   },
   "keywords": [],
   "author": "Nicolas Vera",
